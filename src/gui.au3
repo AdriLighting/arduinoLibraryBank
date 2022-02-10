@@ -14,6 +14,7 @@ local  $cu_t = 10
 $pDev_gui_main = GUICreate("AdriUnoManager - 0.1", $pDev_gui_w, $pDev_gui_h,-1,-1)
 
 local $mFilemenu = GUICtrlCreateMenu("menu")
+$mLibSetItem = GUICtrlCreateMenuItem("lib set", $mFilemenu)
 $mLibAddItem = GUICtrlCreateMenuItem("lib add", $mFilemenu)
 $mPioFrameworkItem = GUICtrlCreateMenuItem("pio framework", $mFilemenu)
 $mExititem = GUICtrlCreateMenuItem("Exit", $mFilemenu)
@@ -61,31 +62,33 @@ $pDev_cmb_filterKeys = GUICtrlCreateCombo("", $cu_l, $cu_t, $cu_w , 20, BitOR($g
 $cu_l += $cu_w + 5
 $cu_w = _Pdev_tools_pourcentage(19.5, $pDev_gui_w)
 $pDev_inp_filterKeys = GUICtrlCreateInput("", $cu_l, $cu_t, $cu_w, 20)
-$cu_l += $cu_w + 5 + 5
-$cu_w = _Pdev_tools_pourcentage(4, $pDev_gui_w)
-$pDev_bt_filterCat = GUICtrlCreateButton("filter",  $cu_l, $cu_t, $cu_w, 20)
+
 
 ; --------------------------------------------------------------- AUTHOR
-$cu_l += $cu_w + 5 + 10
+$cu_l += $cu_w + 5 
 $cu_w = _Pdev_tools_pourcentage(6, $pDev_gui_w)
-$pDev_cmb_filterKAuth = GUICtrlCreateCombo("", $cu_l, $cu_t, $cu_w , 20, BitOR($gui_ss_default_combo, $cbs_dropdownlist, $ws_hscroll))
+$pDev_cmb_filterGrp = GUICtrlCreateCombo("", $cu_l, $cu_t, $cu_w , 20, BitOR($gui_ss_default_combo, $cbs_dropdownlist, $ws_hscroll))
 $cu_l += $cu_w + 5
-$cu_w = _Pdev_tools_pourcentage(8, $pDev_gui_w)
-$pDev_inp_filterKAuth = GUICtrlCreateInput("", $cu_l, $cu_t, $cu_w, 20)
-$cu_l += $cu_w + 5
-$cu_w = _Pdev_tools_pourcentage(4, $pDev_gui_w)
-$pDev_bt_filterKAuth = GUICtrlCreateButton("author",  $cu_l, $cu_t, $cu_w, 20)
+$cu_w = _Pdev_tools_pourcentage(13, $pDev_gui_w)
+$pDev_inp_filterGrp = GUICtrlCreateInput("", $cu_l, $cu_t, $cu_w, 20)
+; $cu_l += $cu_w + 5
+; $cu_w = _Pdev_tools_pourcentage(4, $pDev_gui_w)
+; $pDev_bt_filterKAuth = GUICtrlCreateButton("author",  $cu_l, $cu_t, $cu_w, 20)
 
 ; --------------------------------------------------------------- PLATFORM
-$cu_l += $cu_w + 5 + 10
+$cu_l += $cu_w + 5 
 $cu_w = _Pdev_tools_pourcentage(6, $pDev_gui_w)
 $pDev_cmb_filterKPlat = GUICtrlCreateCombo("", $cu_l, $cu_t, $cu_w , 20, BitOR($gui_ss_default_combo, $cbs_dropdownlist, $ws_hscroll))
 $cu_l += $cu_w + 5
-$cu_w = _Pdev_tools_pourcentage(8, $pDev_gui_w)
+$cu_w = _Pdev_tools_pourcentage(13, $pDev_gui_w)
 $pDev_inp_filterKPlat = GUICtrlCreateInput("", $cu_l, $cu_t, $cu_w, 20)
-$cu_l += $cu_w + 5
+; $cu_l += $cu_w + 5
+; $cu_w = _Pdev_tools_pourcentage(4, $pDev_gui_w)
+; $pDev_bt_filterKPlat = GUICtrlCreateButton("platform",  $cu_l, $cu_t, $cu_w, 20)
+
+$cu_l += $cu_w + 5 + 5
 $cu_w = _Pdev_tools_pourcentage(4, $pDev_gui_w)
-$pDev_bt_filterKPlat = GUICtrlCreateButton("platform",  $cu_l, $cu_t, $cu_w, 20)
+$pDev_bt_filterCat = GUICtrlCreateButton("filter",  $cu_l, $cu_t, $cu_w, 20)
 
 ; --------------------------------------------------------------- LV LIBS
 $cu_t+=25

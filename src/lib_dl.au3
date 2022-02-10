@@ -37,12 +37,12 @@ func _lib_oldDlAll(byref $list_1)
 			endif
 	Next
 EndFunc
-func _lib_dlAll(byref $list_1, $sFlag = @SW_HIDE)
+func _lib_dlAll(byref $list_1)
 	Local $name, $url, $ir = IniReadSectionNames($pDev_fp_ini_libs)
 	for $i = 1 to ubound($ir)-1
 		$name 	= IniRead($pDev_fp_ini_libs, $ir[$i], "dirname", "")
 		$url 	= IniRead($pDev_fp_ini_libs, $ir[$i], "git", "")
-		repository_clone($list_1, $url, $sFlag)
+		repository_clone($list_1, $url, $pDev_fo_tempLib)
 		if UBound($list_1) = 0 Then
 			IniWrite($pDev_fp_ini_libsManage, "gitFail", $name, $url)
 			ContinueLoop

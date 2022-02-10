@@ -31,15 +31,19 @@
 #include "lib_check.au3"
 #include "lib_pio.au3"
 
-if not FileExists($pDev_fo_libraryProperties) then _lib_dlAll($_libs_v1, @sw_show)
+if not FileExists($pDev_fo_libraryProperties) then 
+    GUISetState(@SW_SHOW, $tempGui)
+    _lib_dlAll($_libs_v1)
+    GUISetState(@SW_HIDE, $tempGui)
+endif
 _lib_get_keywords($_catArr, $_keysArr, $_grpArr)
 _lib_makeArray($_libs_v1)
 _ArraySort($_catArr, 0)
 _ArraySort($_keysArr, 0)
-_ArraySort($_grpArr, 0)
+; _ArraySort($_grpArr, 0)
 _ADFunc_Gui_Combo_SetData(0, 0, 0, $pDev_cmb_filterCat, $_catArr)
 _ADFunc_Gui_Combo_SetData(0, 0, 0, $pDev_cmb_filterKeys, $_keysArr)
-_ADFunc_Gui_Combo_SetData(0, 0, 0, $pDev_cmb_filterKAuth, $_grpArr)
+_ADFunc_Gui_Combo_SetData(0, 0, 0, $pDev_cmb_filterGrp, $_grpArr)
 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
 GUIRegisterMsg($WM_NOTIFY, "_WM_NOTIFY")
 GUISetState(@SW_SHOW, $pDev_gui_main)
@@ -53,6 +57,12 @@ func _pDev_loop()
         Local $nMsg = GUIGetMsg()
         Switch $nMsg
             Case $mPioFrameworkItem
+                Local $sOutput = _pDev_runComspec("pio lib builtin --json-output", @scriptdir)
+                _pDev_pio_libBuiltinList($sOutput)
+                _lib_makeArray($_libs_v1)
+                _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
+                                
+            Case $mLibSetItem
                  _lib_dlAll($_libs_v1)
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
@@ -60,14 +70,17 @@ func _pDev_loop()
                 _lib_dl()
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
-            Case $pDev_inp_filterCat
+
+            Case $pDev_inp_filterCat, $pDev_bt_filterCat, $pDev_inp_filterGrp
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
-            Case $pDev_bt_filterCat
-                _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
+
+            Case $pDev_cmb_filterGrp
+                _cmb_filter($pDev_cmb_filterGrp, $pDev_inp_filterGrp)                
             Case $pDev_cmb_filterCat
                 _cmb_filter($pDev_cmb_filterCat, $pDev_inp_filterCat)
             Case $pDev_cmb_filterKeys
                 _cmb_filter($pDev_cmb_filterKeys, $pDev_inp_filterKeys)
+
             Case $GUI_EVENT_MINIMIZE
                 GUISetState(@sw_minimize)
             Case $GUI_EVENT_RESTORE
@@ -83,9 +96,10 @@ func _pDev_loop()
         EndSwitch
         if ($pDev_gui_editProp) then
             $pDev_gui_editProp = false
-            _pDev_menuLv_lib_prop($_libs_v1, GUICtrlGetHandle($pDev_lv_pj))
-            _lib_makeArray($_libs_v1)
-            _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
+            if (_pDev_menuLv_lib_prop($_libs_v1, GUICtrlGetHandle($pDev_lv_pj))) then
+                _lib_makeArray($_libs_v1)
+                _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
+            endif
         endif
     WEnd
 EndFunc
@@ -115,7 +129,7 @@ func _cmb_filter(byref $cmb, byref $inp)
         endif
         GUICtrlSetData($inp, $data)
     endif
-    _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj, GUICtrlRead($pDev_cmb_filterCat), GUICtrlRead($pDev_cmb_filterKeys))
+    _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj, GUICtrlRead($pDev_cmb_filterCat), GUICtrlRead($pDev_cmb_filterKeys), GUICtrlRead($pDev_cmb_filterGrp))
 endfunc
 Func _WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
     #forceref $hWnd, $iMsg, $wParam

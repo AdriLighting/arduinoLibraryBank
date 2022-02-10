@@ -129,6 +129,7 @@ func _libraryProperties($grpArr, $sFile, $sName = "", $sUrl = "")
 	guictrlsetdata($edit, $data)
 
 	local $upd = false
+	Local $result = false
 	While 1
 		Local $nMsg = GUIGetMsg()
 		Switch $nMsg
@@ -136,6 +137,7 @@ func _libraryProperties($grpArr, $sFile, $sName = "", $sUrl = "")
 				for $i = 0 to ubound($elements_2)-1
 					iniwrite($pDev_fp_ini_libs, $sName, $elements_2[$i][1], GUICtrlRead($elements_2[$i][0]))
 				next
+				$result = true
 			Case $bt_sav
 				$data = ""
 
@@ -148,6 +150,7 @@ func _libraryProperties($grpArr, $sFile, $sName = "", $sUrl = "")
 				FileWrite($path, $data)
 				guictrlsetdata($elements_2[0][0], 1)
 				iniwrite($pDev_fp_ini_libs, $sName, "library_properties", "1")
+				$result = true
 			Case $GUI_EVENT_CLOSE
 				exitloop
 		endswitch
@@ -171,7 +174,7 @@ func _libraryProperties($grpArr, $sFile, $sName = "", $sUrl = "")
 	wend
 	GUIDelete($pDev_gui_libAdd)
 
-
+	return $result
 endfunc
 
 

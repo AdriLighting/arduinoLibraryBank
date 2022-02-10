@@ -29,12 +29,15 @@
 Global $pDev_arrInp_lib[3]
 Global $pDev_gui_main, $pDev_inp_filterName
 Global $pDev_cmb_filterCat, $pDev_inp_filterCat, $pDev_bt_filterCat
-Global $pDev_cmb_filterKeys, $pDev_inp_filterKeys, $pDev_bt_filterKeys
-Global $pDev_cmb_filterKAuth, $pDev_inp_filterKAuth, $pDev_bt_filterKAuth
-Global $pDev_cmb_filterKPlat, $pDev_inp_filterKPlat, $pDev_bt_filterKPlat
+Global $pDev_cmb_filterKeys, $pDev_inp_filterKeys
+Global $pDev_cmb_filterGrp, $pDev_inp_filterGrp
+Global $pDev_cmb_filterKPlat, $pDev_inp_filterKPlat
 Global $pDev_lv_pj
 
-Global $mLibAddItem, $mPioFrameworkItem, $mExititem
+Global $mLibAddItem, $mPioFrameworkItem, $mExititem, $mLibSetItem
+
+Global $tempGui = GUICreate("libDl", 500, 300)
+Global $tempGui_edit = GUICtrlCreateEdit("", 10, 10, 480, 280)
 
 
 Global $_update_lv = false

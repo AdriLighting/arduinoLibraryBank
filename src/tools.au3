@@ -114,3 +114,42 @@ func _pDev_runComspec($cmd = "pio boards --installed --json-output", $workingdir
  	_upd("", 3, 2)
 	Return $sOutput
 EndFunc
+Func _getCmdStd(Const $sCMD, Const $sDir = '', Const $iType = $STDERR_MERGED, Const $bShow = False, Const $iDelay = 100)
+    Local       $sTMP = ''
+    Local       $sSTD = ''
+    Local       $sCOM = @ComSpec & ' /c ' & $sCMD
+    Local Const $iWin = $bShow ? @SW_SHOW : @SW_HIDE
+    Local Const $iPID = Run($sCOM, $sDir, $iWin, $iType)
+
+    ; _GUICtrlRichEdit_SetText($pDev_richEdit, "")
+    
+    While True
+
+        $sTMP = StdoutRead($iPID, False, False)
+
+        If @error Then
+
+            ExitLoop 1
+
+        ElseIf $sTMP Then
+
+            $sTMP  = StringReplace($sTMP, @CR & @CR, '')
+            $sSTD &= $sTMP
+
+            if StringInStr($sTMP, "warning: ", 1) then
+                _upd($sTMP,0,0,true,7.5,'255,255,0')
+            elseif StringInStr($sTMP, "error: ", 1) then
+                _upd($sTMP,0,0,true,7.5,'255,0,0')
+            else
+                _upd($sTMP,0,0,true,7.5,'255,255,255')
+            EndIf
+            GUICtrlSetData($tempGui_edit, guictrlread($tempGui_edit)&@crlf&$sCMD&@crlf&$sTMP&@crlf)
+        EndIf
+
+        Sleep($iDelay)
+
+    WEnd
+    
+    ; Return SetError(@error, @extended, $sSTD)
+    Return $sSTD
+EndFunc

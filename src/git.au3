@@ -1,5 +1,5 @@
-func repository_clone(ByRef $array, $url = "https://github.com/AdriLighting/esp8266_events", $workingDir = $pDev_fo_tempLib, $sFlag = @SW_HIDE)
-
+func repository_clone(ByRef $array, $url = "https://github.com/AdriLighting/esp8266_events", $workingDir = $pDev_fo_tempLib)
+	
 	if FileExists($workingDir) Then DirRemove($workingDir, 1)
 	if Not FileExists($workingDir) Then DirCreate($workingDir)
 
@@ -12,16 +12,19 @@ func repository_clone(ByRef $array, $url = "https://github.com/AdriLighting/esp8
 
 	Sleep(1000)
 
-	RunWait("git clone " & $url, $workingDir, $sFlag)
+	; RunWait("git clone " & $url, $workingDir, $sFlag)
+	_getCmdStd("git clone " & $url, $workingDir, $STDERR_MERGED, False, 100)
 	$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
 	if @error Then
-		RunWait($_gitCmd_clone_master & $url, $workingDir, $sFlag)
+		_getCmdStd($_gitCmd_clone_master & $url, $workingDir, False, 100)
 	EndIf
 	$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
 	if @error Then
-		RunWait($_gitCmd_clone_main & $url, $workingDir, $sFlag)
+		_getCmdStd($_gitCmd_clone_main & $url, $workingDir, False, 100)
 	EndIf
 	$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
+
+	
 
 EndFunc
 func repository_cloneTo( $url = "", $workingDir = @desktopdir & "\")
@@ -90,11 +93,9 @@ func repository_check($sFolder = $pDev_fo_tempLib)
 
 		if ($aExtension = "driveupload") Then ContinueLoop
 		if ($aFileName & $aExtension = "library.properties") Then
-			consolewrite("search 1AA " & @tab & $fileList[$i] & @lf)
 			$findIni = $fileList[$i]
 		EndIf
 		if ($aFileName & $aExtension = "library.json") Then
-			consolewrite("search 1AB " & @tab & $fileList[$i] & @lf)
 			$findJson = $fileList[$i]
 		EndIf
 

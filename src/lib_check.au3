@@ -3,7 +3,7 @@
 #ce
 
 
-func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterKey = "")
+func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterKey = "", $multiFilterGrp = "")
 	; --------------------------------------------------- LV CLEAR
 	_GUICtrlListView_DeleteAllItems($lv)
 	_pDev_lv_deleteColumns($lv)
@@ -16,13 +16,31 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
 	["", "", "", "", "", "", "", "", "", "", ""], _
 	["", "", "", "", "", "", "", "", "", "", ""], _
 	["", "", "", "", "", "", "", "", "", "", ""], _
+	["", "", "", "", "", "", "", "", "", "", ""], _
 	["", "", "", "", "", "", "", "", "", "", ""]]
 	$filterArray[0][0] =  GUICtrlRead($pDev_cmb_filterCat)
 	$filterArray[1][0] =  GUICtrlRead($pDev_cmb_filterKeys)
-	Local $catFilterMult 	= GUICtrlRead($pDev_inp_filterCat)
-	Local $ckeyFilterMult = GUICtrlRead($pDev_inp_filterKeys)
+	$filterArray[2][0] =  GUICtrlRead($pDev_cmb_filterGrp)
+	Local $grpFilterMult	= GUICtrlRead($pDev_inp_filterGrp)
+	Local $catFilterMult	= GUICtrlRead($pDev_inp_filterCat)
+	Local $ckeyFilterMult 	= GUICtrlRead($pDev_inp_filterKeys)
 	Local $split
-
+	if  ($grpFilterMult <> "") and ($multiFilterGrp <> "_ALL") then
+		$split = StringSplit($grpFilterMult,";")
+		if not @error then
+			$filterArray[2][0] =  ""
+			for $i = 1 to ubound($split)-1
+				for $k = 0 to ubound($filterArray, 2)-1
+					if ($filterArray[2][$k] == "") Then
+						$filterArray[2][$k] = $split[$i]
+						ExitLoop
+					endif
+				next
+			next
+		else
+			$filterArray[2][0] =  GUICtrlRead($pDev_inp_filterGrp)
+		endif
+	endif
 	if  ($catFilterMult <> "") and ($multiFilterCat <> "_ALL") then
 		$split = StringSplit($catFilterMult,";")
 		if not @error then
@@ -57,6 +75,7 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
 	endif
 
 
+	local $continue_grpArr[0]
 	local $continue_catArr[0]
 	local $continue_keyArr[0]
 	local $key
@@ -88,6 +107,21 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
 					endif
 				endif
 
+				; GRP
+				if ($filterArray[2][$k] <> "") Then
+					if ($filterArray[2][$k] = "_ALL") Then
+						_ArrayAdd($continue_grpArr, "_ALL")
+					elseif ($array[$i][18] = "") Then
+					else
+						; split array every ", "
+
+							; if StringInStr( StringLower($filterArray[1][$k]), StringLower(StringStripWS($array[$i][15],1+2+4))) or  StringInStr(StringLower(StringStripWS($array[$i][15],1+2+4)) , StringLower($filterArray[1][$k])) Then
+							if StringStripWS($array[$i][18],1+2+4) = $filterArray[2][$k] Then
+								_ArrayAdd($continue_grpArr, $array[$i][18])
+							endif
+					endif
+				endif
+
 				;  compare array[][11] vs key "category" from library.properties
 				if ($filterArray[0][$k] <> "") Then
 					if ($filterArray[0][$k] = "_ALL") Then
@@ -105,6 +139,7 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
     	; --------------------------------------------------- ARRAY FILTER SET
     	Local $cnt_1 = 0
     	Local $cnt_2 = 0
+    	Local $cnt_3 = 0
     	for $j = 0 to ubound($continue_catArr)-1
     		if $continue_catArr[$j] = "_ALL"			then $cnt_1 += 1
     		if $continue_catArr[$j] = $array[$i][11] 	then $cnt_1 += 1
@@ -113,7 +148,12 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
     		if $continue_keyArr[$j] = "_ALL" 			then $cnt_2 += 1
     		if $continue_keyArr[$j] = $array[$i][15] 	then $cnt_2 += 1
     	next
-    	if ($cnt_1 = 0 or $cnt_2 = 0) then ContinueLoop
+     	for $j = 0 to ubound($continue_grpArr)-1
+    		if $continue_grpArr[$j] = "_ALL" 			then $cnt_3 += 1
+    		if $continue_grpArr[$j] = $array[$i][18] 	then $cnt_3 += 1
+    	next
+    	
+    	if ($cnt_1 = 0 or $cnt_2 = 0 or $cnt_3 = 0) then ContinueLoop
 
 		if GUICtrlRead($pDev_inp_filterName) <> "" Then
 			if (_pDev_Checkword(GUICtrlRead($pDev_inp_filterName),  $array[$i][0]) < 3) then ContinueLoop
@@ -127,7 +167,7 @@ func _lib_makeArray_lvCol(byref $array, $lv, $multiFilterCat = "", $multiFilterK
     	next
     next
 endfunc
-func _lib_makeArray(ByRef $arr)
+func _lib_makeArray(ByRef $_arr)
     local $data, $arr_2, $fr, $json_1, $sFile,  $tempFile = @TempDir & "\temp_GitUrl.ini"
     local $ir_2, $path, $fo
    	local $pos = 0
@@ -140,7 +180,7 @@ func _lib_makeArray(ByRef $arr)
 			$arraySize += ubound($ir_2)-1
 		endif
 	next
-    redim $arr[$arraySize][19]
+    local $arr[$arraySize][19]
     for $i = 1 to ubound($ir)-1
     	; add data from _libsEx.ini
         $fo     			= IniRead($pDev_fp_ini_libs, $ir[$i], "dirname",	"")
@@ -253,6 +293,8 @@ func _lib_makeArray(ByRef $arr)
 	local $aSortData[][] = [ _
 	[0, 0]]
 	_ArrayMultiColSort($arr, $aSortData)
+
+	$_arr = $arr
 EndFunc
 
 
@@ -311,6 +353,7 @@ func _lib_get_keywords(byref $catArr, byref $keysArr, byref $_grpArr)
 		EndIf
 	Next
 	$keysArr = _ADFunc_Array_ArrayDeleteClones($keywordAllyArr)
+	_ArrayAdd($grpArr, "_ALL")
 	local $ir = IniReadSectionNames($pDev_fp_ini_libs)
     for $i = 1 to ubound($ir)-1
     	_ArrayAdd($grpArr, IniRead($pDev_fp_ini_libs, $ir[$i], "group", ""))

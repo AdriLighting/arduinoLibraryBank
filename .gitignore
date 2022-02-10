@@ -5,3 +5,4 @@
 /data/ini/framework-arduino-avr.ini
 /data/ini/framework-arduinoespressif8266.ini
 /data/ini/lib_manage.ini
+*.exe

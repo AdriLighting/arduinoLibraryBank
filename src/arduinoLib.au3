@@ -31,6 +31,11 @@
 #include "lib_check.au3"
 #include "lib_pio.au3"
 
+if not FileExists($pDev_fp_ini_libs) then 
+    DirCreate(pDev_fo_ini_libCheck)
+    _pDev_Inet_InetGet("https://github.com/AdriLighting/arduinoLibraryBank/blob/main/data/ini/_libsEx.ini", $pDev_fp_ini_libs)
+endif
+if not FileExists($pDev_fp_ini_libs) then exit
 if not FileExists($pDev_fo_libraryProperties) then 
     GUISetState(@SW_SHOW, $tempGui)
     _lib_dlAll($_libs_v1)
@@ -61,7 +66,7 @@ func _pDev_loop()
                 _pDev_pio_libBuiltinList($sOutput)
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
-                                
+
             Case $mLibSetItem
                  _lib_dlAll($_libs_v1)
                 _lib_makeArray($_libs_v1)

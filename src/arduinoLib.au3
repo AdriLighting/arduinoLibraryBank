@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Res_CompanyName=AdriLIghting
 #AutoIt3Wrapper_Res_LegalCopyright=AdriLIghting
 #AutoIt3Wrapper_Res_Language=1036
-#AutoIt3Wrapper_Au3Check_Parameters=-q -d -w 1 -w 2 -w 3 -w- 4 -w 5 -w 6 -w- 7
+#AutoIt3Wrapper_AU3Check_Parameters=-q -d -w 1 -w 2 -w 3 -w- 4 -w 5 -w 6 -w- 7
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #include <File.au3>
@@ -32,7 +32,8 @@
 #include "lib_pio.au3"
 
 if not FileExists($pDev_fp_ini_libs) then 
-    DirCreate(pDev_fo_ini_libCheck)
+    DirCreate($pDev_fo_data)
+    DirCreate($pDev_fo_ini_libCheck)
     _pDev_Inet_InetGet("https://github.com/AdriLighting/arduinoLibraryBank/blob/main/data/ini/_libsEx.ini", $pDev_fp_ini_libs)
 endif
 if not FileExists($pDev_fp_ini_libs) then exit

@@ -24,6 +24,7 @@
 	Global $_fo_pioPackages				= @UserProfileDir & "\.platformio\packages\"
 	Global $pDev_fo_ini_framework		= $pDev_fo_compil & "\data\ini\framework\"
 	Global $pDev_fo_ini_libCheck		= $pDev_fo_compil & "\data\ini\"
+	Global $pDev_fo_data				= $pDev_fo_compil & "\data\"
 
 
 Global $pDev_arrInp_lib[3]

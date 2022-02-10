@@ -129,9 +129,9 @@ func _pDev_menuLv_lib_prop(byref $array, $Lv = GUICtrlGetHandle($pDev_lv_pj))
             for $j = 0 to ubound($array)-1
                 if ($sSubItemTxt = $array[$j][0]) then
 			        if ( IniRead($pDev_fp_ini_libs, $array[$j][0], "library_properties", "") = "1") then
-			        	_libraryProperties($_grpArr, $pDev_fo_libraryPropertiesEx & $array[$j][0] & "\library.properties", $array[$j][0], $array[$j][1])
+			        	return _libraryProperties($_grpArr, $pDev_fo_libraryPropertiesEx & $array[$j][0] & "\library.properties", $array[$j][0], $array[$j][1])
 			        else
-			        	_libraryProperties($_grpArr, $pDev_fo_libraryProperties & $array[$j][0] & "\library.properties", $array[$j][0], $array[$j][1])
+			        	return _libraryProperties($_grpArr, $pDev_fo_libraryProperties & $array[$j][0] & "\library.properties", $array[$j][0], $array[$j][1])
 			        endif
                 endif
             next

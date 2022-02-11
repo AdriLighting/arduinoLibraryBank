@@ -12,6 +12,18 @@ func repository_clone(ByRef $array, $url = "https://github.com/AdriLighting/esp8
 
 	Sleep(1000)
 
+ 	_upd("- repository_clone", 3, 1)
+ 	_upd(_lbl("url") & $url, 3, 0)
+ 	_upd(_lbl("dir") & $workingDir, 3, 0)
+ 	
+ 	
+	if StringInStr($url, "|") then 
+		Local $split = StringSplit($url, "|")
+		_getCmdStd( String('git clone --single-branch --branch ' & $split[2] &  ' ' & '"' & $split[1] & '"' ), $workingDir, $STDERR_MERGED, False, 100)
+		$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
+		return	
+	endif
+
 	; RunWait("git clone " & $url, $workingDir, $sFlag)
 	_getCmdStd("git clone " & $url, $workingDir, $STDERR_MERGED, False, 100)
 	$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
@@ -24,7 +36,7 @@ func repository_clone(ByRef $array, $url = "https://github.com/AdriLighting/esp8
 	EndIf
 	$array = _FileListToArrayRec($workingDir, "*", 2, 0, 0, 2)
 
-	
+	_upd("", 3, 2)
 
 EndFunc
 func repository_cloneTo( $url = "", $workingDir = @desktopdir & "\")
@@ -38,10 +50,17 @@ func repository_cloneTo( $url = "", $workingDir = @desktopdir & "\")
 
 	Local $array
 
-	RunWait("git clone " & $url, $temp, @SW_SHOW)
+	if StringInStr($url, "|") then 
+		Local $split = StringSplit($url, "|")
+		_getCmdStd( String('git clone --single-branch --branch ' & $split[2] &  ' ' & '"' & $split[1] & '"' ), $temp, $STDERR_MERGED, False, 100)
+		$array = _FileListToArrayRec($temp, "*", 2, 0, 0, 2)
+		return	
+	endif
+
+	_getCmdStd("git clone " & $url, $temp, $STDERR_MERGED, False, 100)
 	$array = _FileListToArrayRec($temp, "*", 2, 0, 0, 2)
 	if @error Then
-		RunWait($_gitCmd_clone_master & $url, $temp, @SW_SHOW)
+		_getCmdStd($_gitCmd_clone_master & $url, $temp, $STDERR_MERGED, False, 100)
 	else
 		_PathSplit($pDev_fo_libraryProperties, $sDrive, $sDir, $sFileName, $sExtension)
 		$dirName = StringSplit($sDir, "\")
@@ -52,7 +71,7 @@ func repository_cloneTo( $url = "", $workingDir = @desktopdir & "\")
 	EndIf
 	$array = _FileListToArrayRec($temp, "*", 2, 0, 0, 2)
 	if @error Then
-		RunWait($_gitCmd_clone_main & $url, $temp, @SW_SHOW)
+		_getCmdStd($_gitCmd_clone_main & $url, $temp, $STDERR_MERGED, False, 100)
 	else
 		_PathSplit($pDev_fo_libraryProperties, $sDrive, $sDir, $sFileName, $sExtension)
 		$dirName = StringSplit($sDir, "\")

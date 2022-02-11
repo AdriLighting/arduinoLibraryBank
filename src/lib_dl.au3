@@ -38,8 +38,12 @@ func _lib_oldDlAll(byref $list_1)
 	Next
 EndFunc
 func _lib_dlAll(byref $list_1)
+	GUICtrlSetData($pdev_guiDebug_Progress, 0)
 	Local $name, $url, $ir = IniReadSectionNames($pDev_fp_ini_libs)
 	for $i = 1 to ubound($ir)-1
+		local $pourcentage = Round($i * 100 / UBound($ir) - 1)
+		if $pDevGuiDebug then GUICtrlSetData($pdev_guiDebug_Progress, $pourcentage)
+		
 		$name 	= IniRead($pDev_fp_ini_libs, $ir[$i], "dirname", "")
 		$url 	= IniRead($pDev_fp_ini_libs, $ir[$i], "git", "")
 		repository_clone($list_1, $url, $pDev_fo_tempLib)
@@ -89,28 +93,25 @@ func _pDev_menuLv_lib_gitClone(byref $array, $Lv = GUICtrlGetHandle($pDev_lv_pj)
 	_upd("!_pDev_menuLv_lib_gitClone START",0,0)
 	local $sPworkingDir = FileSelectFolder("dev folder", @MyDocumentsDir & "\arduino\libraries")
 	if ($sPworkingDir = "") then return
-
+	_debugGui(@SW_SHOW)
 	Local $sSubItemTxt
 	Local $iSelect = _GUICtrlListView_GetSelectedIndices($Lv, True)
 	If $iSelect[0] > 0 Then
 		_upd(_lbl("dir") & "file:///" & $sPworkingDir,3,0)
-		If _pDev_lv_countItemChecked($Lv) > 1 Then
-			For $i = 0 To _GUICtrlListView_GetItemCount($Lv) - 1
-				If _GUICtrlListView_GetItemChecked($Lv, $i) Then
-					$sSubItemTxt = _GUICtrlListView_GetItemText($Lv, $i, 0)
-				EndIf
-			Next
-		Else
-			$sSubItemTxt = _GUICtrlListView_GetItemText($Lv, $iSelect[1], 0)
-            for $j = 0 to ubound($array)-1
-                if ($sSubItemTxt = $array[$j][0]) then
-                    _upd(_lbl("value") & $array[$j][1], 3, 0)
-					repository_cloneTo( $array[$j][1], $sPworkingDir)
-                endif
-            next
-		EndIf
+		For $i = 0 To _GUICtrlListView_GetItemCount($Lv) - 1
+			If _GUICtrlListView_GetItemSelected($Lv, $i) Then
+				$sSubItemTxt = _GUICtrlListView_GetItemText($Lv, $i, 0)
+	            for $j = 0 to ubound($array)-1
+	                if ($sSubItemTxt = $array[$j][0]) then
+	                    _upd(_lbl("value") & $array[$j][1], 3, 0)
+						repository_cloneTo( $array[$j][1], $sPworkingDir)
+	                endif
+	            next					
+			EndIf
+		Next		
 	EndIf
 	_upd("!_pDev_menuLv_lib_gitClone END",0,0)
+	_debugGui(@SW_HIDE)
 endfunc
 
 func _pDev_menuLv_lib_prop(byref $array, $Lv = GUICtrlGetHandle($pDev_lv_pj))

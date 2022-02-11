@@ -13,6 +13,7 @@
 
 #include <File.au3>
 #include <GuiMenu.au3>
+#include <GuiRichEdit.au3>
 
 #include "lib_interne/Json.au3"
 #include "lib_interne/_ADFunc.au3"
@@ -24,23 +25,32 @@
 #include "var.au3"
 #include "tools.au3"
 #include "gui.au3"
-#include "tools/tools.au3"
 #include "git.au3"
 #include "lib_dl.au3"
 #include "lib_edit.au3"
 #include "lib_check.au3"
 #include "lib_pio.au3"
 
+; local $testArr_1[0]
+; repository_clone($testArr_1,  "https://github.com/Intrinsically-Sublime/esp8266-fastled-webserver|CCx_8266", $pDev_fo_tempLib)
+; if UBound($testArr_1) = 0 Then
+;     exit
+; EndIf
+; Local $testArr_2 = repository_check($testArr_1[1])
+; _ArrayDisplay($testArr_2)
+; exit
 if not FileExists($pDev_fp_ini_libs) then 
     DirCreate($pDev_fo_data)
     DirCreate($pDev_fo_ini_libCheck)
-    _pDev_Inet_InetGet("https://github.com/AdriLighting/arduinoLibraryBank/blob/main/data/ini/_libsEx.ini", $pDev_fp_ini_libs)
+    _debugGui()
+    _pDev_Inet_InetGet("https://raw.githubusercontent.com/AdriLighting/arduinoLibraryBank/main/data/ini/_libsEx.ini", $pDev_fp_ini_libs)
+    _debugGui(@SW_HIDE)
 endif
 if not FileExists($pDev_fp_ini_libs) then exit
 if not FileExists($pDev_fo_libraryProperties) then 
-    GUISetState(@SW_SHOW, $tempGui)
+    _debugGui(@SW_SHOW)
     _lib_dlAll($_libs_v1)
-    GUISetState(@SW_HIDE, $tempGui)
+    _debugGui(@SW_HIDE)
 endif
 _lib_get_keywords($_catArr, $_keysArr, $_grpArr)
 _lib_makeArray($_libs_v1)
@@ -63,17 +73,23 @@ func _pDev_loop()
         Local $nMsg = GUIGetMsg()
         Switch $nMsg
             Case $mPioFrameworkItem
+                _debugGui(@SW_SHOW)
                 Local $sOutput = _pDev_runComspec("pio lib builtin --json-output", @scriptdir)
                 _pDev_pio_libBuiltinList($sOutput)
+                _debugGui(@SW_HIDE)
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
 
             Case $mLibSetItem
+                _debugGui(@SW_SHOW)
                  _lib_dlAll($_libs_v1)
+                 _debugGui(@SW_HIDE)
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
             Case $mLibAddItem
+                _debugGui(@SW_SHOW)
                 _lib_dl()
+                _debugGui(@SW_HIDE)
                 _lib_makeArray($_libs_v1)
                 _lib_makeArray_lvCol($_libs_v1, $pDev_lv_pj)
 

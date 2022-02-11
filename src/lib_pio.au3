@@ -8,12 +8,12 @@ func _pDev_pio_libBuiltinList($sOutput)
 
 	_upd("UBound($aReturned) : " & UBound($aReturned), 3, 0)
 
-;~ 	GUICtrlSetData($pdev_guiDebug_Progress, 0)
+ 	GUICtrlSetData($pdev_guiDebug_Progress, 0)
 
 	Local $ir, $value, $key, $framework = "", $frameworkPath = ""
 	For $i = 1 to UBound($aReturned) - 1
-;~ 		local $pourcentage = Round($i * 100 / UBound($aReturned) - 1)
-;~ 		if $pDevGuiDebug then GUICtrlSetData($pdev_guiDebug_Progress, $pourcentage)
+ 		local $pourcentage = Round($i * 100 / UBound($aReturned) - 1)
+ 		if $pDevGuiDebug then GUICtrlSetData($pdev_guiDebug_Progress, $pourcentage)
 
 		if $aReturned[$i][2] = "name" Then $framework 		=  $aReturned[$i][3]
 		if $aReturned[$i][2] = "path" Then $frameworkPath 	=  $aReturned[$i][3]
